@@ -6,13 +6,14 @@ from fastapi.security import OAuth2PasswordBearer
 import requests
 from jose import jwt
 
+
 app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Replace these with your own values from the Google Developer Console
 GOOGLE_CLIENT_ID = CLIENT_ID
 GOOGLE_CLIENT_SECRET = CLIENT_SECRET
-GOOGLE_REDIRECT_URI = "http://localhost:8000"
+GOOGLE_REDIRECT_URI = "http://localhost:8000/auth/google"
 
 @app.get("/login/google")
 async def login_google():
@@ -20,6 +21,7 @@ async def login_google():
 
 @app.get("/auth/google")
 async def auth_google(code: str):
+    print("Received code:", code)
     token_url = "https://accounts.google.com/o/oauth2/token"
     data = {
         "code": code,
@@ -36,9 +38,12 @@ async def auth_google(code: str):
 @app.get("/token")
 async def get_token(token: str = Depends(oauth2_scheme)):
     return jwt.decode(token, GOOGLE_CLIENT_SECRET, algorithms=["HS256"])
+
+
 @app.get("/")
 async def home():
     return {"msg": "auth done"}
+
 
 
 if __name__ == "__main__":
