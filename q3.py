@@ -11,9 +11,14 @@ user_queues = Queue()
 user_assignments = {machine_id: {} for machine_id in range(num_machines)}
 completed_users = []
 
-
+class UserRequest(BaseModel):
+    user_name: str
+    wash_time: int
+    
 @app.post("/assign_machine")
-async def assign_machine(user_name: str, wash_time: int):
+async def assign_machine(request: UserRequest):
+    user_name = request.user_name
+    wash_time = request.wash_time
     current_time = datetime.now()
     new_user = {
         "user_name": user_name,
