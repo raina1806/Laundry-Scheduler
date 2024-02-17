@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from queue import Queue
 from datetime import datetime, timedelta
 
+
 app = FastAPI()
 # Number of machines
 num_machines = 3  # Change this to the desired number of machines
@@ -11,14 +12,9 @@ user_queues = Queue()
 user_assignments = {machine_id: {} for machine_id in range(num_machines)}
 completed_users = []
 
-class UserRequest(BaseModel):
-    user_name: str
-    wash_time: int
-    
+
 @app.post("/assign_machine")
-async def assign_machine(request: UserRequest):
-    user_name = request.user_name
-    wash_time = request.wash_time
+async def assign_machine(user_name: str, wash_time: int):
     current_time = datetime.now()
     new_user = {
         "user_name": user_name,
@@ -136,4 +132,4 @@ async def check_user_status(user_name: str):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
